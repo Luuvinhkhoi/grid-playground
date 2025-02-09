@@ -1,0 +1,14 @@
+.resize{
+    background-color: rgb(19, 20, 23);
+    border-radius: .5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 1rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+.resize >div{
+    border: 1px dashed;
+    border-radius: .5rem;
+}

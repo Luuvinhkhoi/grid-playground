@@ -45,11 +45,14 @@ export const SideBar = ()=>{
             <div>Container</div>
             <div className='container-items'>
                 {dropdowns.map((item)=>
-                   item.id?(
+                   item.id ? (
                     <div>
                         <div className='item' onClick={()=>{if(!item.id){setIsOpen(null)} else{setIsOpen(isOpen===item.id ? null : item.id )}}}>
                             <div>
                                 <p>{item.title}</p>
+                            </div>
+                            <div className='item-value'>
+                                <p>1fr 1fr 1fr</p>
                             </div>
                         </div>
                         {isOpen===item.id ? (
@@ -87,9 +90,6 @@ export const SideBar = ()=>{
                   </div>
                 )
                 )}
-                <div></div>
-                <div></div>
-                <div></div>
             </div>
         </div>
      </div>
