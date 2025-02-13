@@ -2,7 +2,8 @@ import './sidebar.css'
 import { useEffect, useState } from 'react'
 import {  useSelector, useDispatch } from 'react-redux'
 import { store } from '../../../store/store'
-import { setAlignContents, setAlignItems, setGap, setGridTemplateColumns, setGridTemplateRows, setJustifyContents, setJustifyItems } from '../../../store/initial'
+import { motion } from "framer-motion";
+import { resetWorkspace, setAlignContents, setAlignItems, setGap, setGridTemplateColumns, setGridTemplateRows, setJustifyContents, setJustifyItems } from '../../../store/initial'
 export const SideBar = ()=>{
     const [isOpen, setIsOpen]=useState(false)
     const dispatch=useDispatch()
@@ -145,6 +146,19 @@ export const SideBar = ()=>{
      <div className='sideBar'>
         <div className='container'>
             <div>Container</div>
+            <div style={{
+                display:'inline-block', 
+                padding:'1rem 3rem', 
+                float:'right', 
+                margin:'1rem 0.5rem 1rem 0', 
+                borderRadius: '.5rem', 
+                backgroundColor:'rgb(36, 41, 45)',
+                cursor:'pointer'
+            }}
+                onClick={()=>dispatch(resetWorkspace())}
+            >
+                    Reset
+            </div>
             <div className='container-items'>
                 {dropdowns.map((item, index)=>
                    item.id ? (
@@ -158,21 +172,30 @@ export const SideBar = ()=>{
                             </div>
                         </div>
                         {isOpen===item.id ? (
-                            <div className='selection'>
-                                {item.selections.map((selection, index)=>
-                                        <div>
-                                            <p>{selection}</p>
-                                            <div className='input-measurment'>
-                                                <input type='number' step={1} min={0} max={10} onChange={(e)=>handleChange(item.title, e.target.value, index)} value={inputValues[item.title][index]||0}></input>
-                                                <select onChange={(e)=>handleUnitChange(item.title,index,e.target.value)}  value={localValues[item.title]?.[index] ?? inputValues[item.title]?.[index] ?? "0"}>
-                                                    {item.mesure.map((mesurement)=>
-                                                      <option value={mesurement}>{mesurement}</option>
-                                                    )}
-                                                </select>
-                                            </div>
-                                        </div>
-                                )}
-                            </div>
+                            <motion.div 
+                                initial={{ height: 0, opacity: 0 }} 
+                                animate={{ height: isOpen === item.id ? "auto" : 0, opacity: isOpen === item.id ? 1 : 0 }} 
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                                className="selection"
+                            >
+                                {item.selections.map((selection, index) => (
+                                <div key={index}>
+                                    <p>{selection}</p>
+                                    <div className="input-measurment">
+                                    <input type="number" step={1} min={0} max={10} 
+                                            onChange={(e) => handleChange(item.title, e.target.value, index)} 
+                                            value={inputValues[item.title][index] || 0} />
+                                    <select onChange={(e) => handleUnitChange(item.title, index, e.target.value)}  
+                                            value={localValues[item.title]?.[index] ?? inputValues[item.title]?.[index] ?? "0"}>
+                                        {item.mesure.map((mesurement) => (
+                                        <option key={mesurement} value={mesurement}>{mesurement}</option>
+                                        ))}
+                                    </select>
+                                    </div>
+                                </div>
+                                ))}
+                            </motion.div>
                             ) : (
                                 <div></div>
                         )}
