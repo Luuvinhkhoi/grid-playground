@@ -45,10 +45,12 @@
     padding:.5rem 0.5rem;
     gap: 0.5rem;
     justify-content: space-between;
+    align-items: center;
 }
 .sideBar .container-items .selection div input{
     width: 35px;
     border-radius: .5rem;
+    padding: .5rem 0;
     outline: none;
     border: none;
     text-align: center;
@@ -89,4 +91,8 @@ select:focus{
   
 .sideBar::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.4); /* Lighter on hover */
+}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
