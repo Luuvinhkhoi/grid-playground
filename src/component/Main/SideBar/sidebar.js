@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import {  useSelector, useDispatch } from 'react-redux'
 import { store } from '../../../store/store'
 import { motion } from "framer-motion";
-import { LayoutTemplate, BetweenVerticalStart,AlignHorizontalJustifyStart,AlignVerticalJustifyEnd} from 'lucide-react';
+import { LayoutTemplate, BetweenVerticalStart,AlignHorizontalJustifyStart,AlignVerticalJustifyEnd, Github} from 'lucide-react';
 import { resetWorkspace, setAlignContents, setAlignItems, setGap, setGridTemplateColumns, setGridTemplateRows, setJustifyContents, setJustifyItems } from '../../../store/initial'
 export const SideBar = ()=>{
     const [isOpen, setIsOpen]=useState(false)
@@ -145,6 +145,21 @@ export const SideBar = ()=>{
      <div className='sideBar'>
         <div className='container'>
             <div style={{fontSize:'18px'}}>CSS Container</div>
+            <a href='https://github.com/Luuvinhkhoi/grid-playground' style={{
+                display: 'flex',
+                padding: '1rem 3rem',
+                float: 'right',
+                margin: '1rem 0.5rem 1rem 0px',
+                borderRadius: '0.5rem',
+                backgroundColor: 'rgb(36, 41, 45)',
+                cursor: 'pointer',
+                textDecoration:'none',
+                color:'rgb(177, 177, 177)',
+                alignItems:'center'
+            }}>
+                <Github />
+                My github repo
+            </a>
             <div style={{
                 display:'inline-block', 
                 padding:'1rem 3rem', 
@@ -152,6 +167,7 @@ export const SideBar = ()=>{
                 margin:'1rem 0.5rem 1rem 0', 
                 borderRadius: '.5rem', 
                 backgroundColor:'rgb(36, 41, 45)',
+                height:'25px',
                 cursor:'pointer'
             }}
                 onClick={()=>resetButton()}
