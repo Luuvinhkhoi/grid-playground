@@ -9,3 +9,8 @@
     border: 1px dashed;
     border-radius: .5rem;
 }
+@media only screen and (max-width:825px){
+    .resize{
+        height: 300px;
+    }
+}

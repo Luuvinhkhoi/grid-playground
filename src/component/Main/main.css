@@ -3,8 +3,27 @@
     margin: 0 auto;
     padding: 1rem 0;
     display: grid;
-    grid-template-columns: 300px 1.5fr;
+    grid-template-columns: 400px 1.5fr;
     color: rgb(177, 177, 177);
     font-weight: 600;
     gap: 1rem;
+}
+@media only screen and (max-width:825px){
+    .main{
+        grid-template-columns: 1fr;
+        grid-template-rows: 20rem auto;
+        width: 95%;
+        grid-template-areas: 
+            "resizeable"
+            "sidebar"; /* Sidebar xuống dưới */
+        min-height: 100vh;
+    }
+    .sideBar {
+        grid-area: sidebar;
+        height: 50vh;
+    }
+    
+    .resizeable {
+        grid-area: resizeable;
+    }
 }

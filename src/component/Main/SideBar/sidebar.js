@@ -3,19 +3,21 @@ import { useEffect, useState } from 'react'
 import {  useSelector, useDispatch } from 'react-redux'
 import { store } from '../../../store/store'
 import { motion } from "framer-motion";
+import { LayoutTemplate, BetweenVerticalStart,AlignHorizontalJustifyStart,AlignVerticalJustifyEnd} from 'lucide-react';
 import { resetWorkspace, setAlignContents, setAlignItems, setGap, setGridTemplateColumns, setGridTemplateRows, setJustifyContents, setJustifyItems } from '../../../store/initial'
 export const SideBar = ()=>{
     const [isOpen, setIsOpen]=useState(false)
     const dispatch=useDispatch()
     const initialSelect=useSelector((state)=>state.init)
-    const gridTemplateColumns = useSelector((state) => state.init.gridTemplateColumns);
-    const gridTemplateRows = useSelector((state) => state.init.gridTemplateRows);
+    let gridTemplateColumns = useSelector((state) => state.init.gridTemplateColumns);
+    let gridTemplateRows = useSelector((state) => state.init.gridTemplateRows);
     const gap = useSelector((state) => state.init.gap);
-    const [localValues, setLocalValues] = useState({});
+    let columnsValues = initialSelect.gridTemplateColumns.split(' ').map(val => parseFloat(val));
+    let rowsValues = initialSelect.gridTemplateRows.split(' ').map(val => parseFloat(val));
     const [inputValues, setInputValues] = useState({
-        "Grid Template Columns": [],
-        "Grid Template Rows": [],
-        "Gap": []
+        "Grid Template Columns": columnsValues,
+        "Grid Template Rows": rowsValues,
+        "Gap": [1,1]
     });    
     const [unit, setUnit] = useState({
         "Grid Template Columns": ["fr", "fr", "fr"],
@@ -23,40 +25,46 @@ export const SideBar = ()=>{
         "Gap": ["rem", "rem"]
     });
     const init=Object.values(initialSelect)
-    console.log(init)
     const dropdowns=[
         {
             id: 1,
             title: 'Grid Template Columns',
+            svg:<LayoutTemplate></LayoutTemplate>,
             selections: ['Grid column 1', 'Grid column 2', 'Grid column 1'],
             mesure:['fr', 'px']
         },
         {
             id: 2,
             title: 'Grid Template Rows',
+            svg:<LayoutTemplate></LayoutTemplate>,
             selections: ['Grid row 1', 'Grid row 2', 'Grid row 3'],
             mesure:['fr','px']
         },
         {
             id: 3,
             title: 'Gap',
+            svg:<BetweenVerticalStart/>,
             selections: ['Row gap', 'Column gap'],
             mesure:['rem','px']
         },
         {
             title:'Justify Item',
+            svg:<AlignHorizontalJustifyStart />,
             selections:['stretch', 'start', 'center', 'end']
         },
         {
             title:'Align Item',
+            svg:<AlignVerticalJustifyEnd />,
             selections:['stretch', 'start', 'center', 'end']
         },
         {
             title:'Justify Content',
+            svg:<AlignHorizontalJustifyStart />,
             selections:['start', 'center', 'end', 'space-between', 'space-around', 'space-evenly']
         },
         {
             title:'Align Content',
+            svg:<AlignVerticalJustifyEnd />,
             selections:['start', 'center', 'end', 'space-between', 'space-around', 'space-evenly']
         },   
     ]
@@ -65,22 +73,12 @@ export const SideBar = ()=>{
         if (newValue === "") {
             newValue = "0";
         } else {
-            // Xóa số 0 đứng đầu (chỉ khi nhập số mới)
             newValue = newValue.replace(/^0+(?=\d)/, "");
         }       
         setInputValues(prev => ({
             ...prev,
             [title]: prev[title].map((val, i) => i === index ? newValue : val)
         }));
-        setLocalValues(prev => ({
-            ...prev,
-            [title]: prev[title] ? prev[title].map((val, i) => i === index ? newValue : val) : [newValue]
-        }));
-        console.log(inputValues)
-        console.log(title)
-        console.log(index)
-        console.log(value)
-        console.log(unit)
         if(title==='Grid Template Columns'){
             let newColumns = init[0].split(' '); 
             newColumns[index]=`${newValue}${unit['Grid Template Columns'][index]}`
@@ -110,42 +108,43 @@ export const SideBar = ()=>{
         setUnit(prev => ({
             ...prev,
             [title]: prev[title].map((unit, i) => i === index ? newUnit : unit)
-        }));        
+        }));  
         if(title==='Grid Template Columns'){
             let columnsArray = gridTemplateColumns.split(" ");
-            let value = parseFloat(columnsArray[index]); // Lấy giá trị số của cột
-            columnsArray[index] = `${value}${newUnit}`; // Thay đổi đơn vị
+            let value = parseFloat(columnsArray[index]); 
+            columnsArray[index] = `${value}${newUnit}`; 
             dispatch(setGridTemplateColumns(columnsArray.join(" ")));;
         } else if(title==='Grid Template Rows'){
             let columnsArray = gridTemplateRows.split(" ");
-            let value = parseFloat(columnsArray[index]); // Lấy giá trị số của cột
-            columnsArray[index] = `${value}${newUnit}`; // Thay đổi đơn vị
+            let value = parseFloat(columnsArray[index]);
+            columnsArray[index] = `${value}${newUnit}`; 
             dispatch(setGridTemplateRows(columnsArray.join(" ")));;
         } else if(title==='Gap'){
-            console.log(index)
             let columnsArray = gap.split(" ");
-            let value = parseFloat(columnsArray[index]); // Lấy giá trị số của cột
-            columnsArray[index] = `${value}${newUnit}`; // Thay đổi đơn vị
+            let value = parseFloat(columnsArray[index]); 
+            columnsArray[index] = `${value}${newUnit}`;
             dispatch(setGap(columnsArray.join(" ")));;
         }
     }
-    useEffect(() => {
-        if (initialSelect) {
-            const columnsValues = initialSelect.gridTemplateColumns.split(' ').map(val => parseFloat(val));
-            const rowsValues = initialSelect.gridTemplateRows.split(' ').map(val => parseFloat(val));
-            
-            setInputValues({
-                "Grid Template Columns": columnsValues,
-                "Grid Template Rows": rowsValues,
-                "Gap": [1, 1] // Giá trị mặc định cho gap
-            });
-        }
-    }, []);
-    console.log(inputValues)
+    const resetButton= async()=>{
+        await dispatch(resetWorkspace())
+        setInputValues({
+            "Grid Template Columns": [1,1,1],
+            "Grid Template Rows": [1,1,1],
+            "Gap": [1,1]
+        });
+        setUnit({
+            "Grid Template Columns": ["fr", "fr", "fr"],
+            "Grid Template Rows": ["fr", "fr", "fr"],
+            "Gap": ["rem", "rem"]
+        });
+
+    }
+    
     return (
      <div className='sideBar'>
         <div className='container'>
-            <div>Container</div>
+            <div style={{fontSize:'18px'}}>CSS Container</div>
             <div style={{
                 display:'inline-block', 
                 padding:'1rem 3rem', 
@@ -155,7 +154,7 @@ export const SideBar = ()=>{
                 backgroundColor:'rgb(36, 41, 45)',
                 cursor:'pointer'
             }}
-                onClick={()=>dispatch(resetWorkspace())}
+                onClick={()=>resetButton()}
             >
                     Reset
             </div>
@@ -164,11 +163,16 @@ export const SideBar = ()=>{
                    item.id ? (
                     <div>
                         <div className='item' onClick={()=>{if(!item.id){setIsOpen(null)} else{setIsOpen(isOpen===item.id ? null : item.id )}}}>
-                            <div>
-                                <p>{item.title}</p>
-                            </div>
-                            <div className='item-value'>
-                                <p>{init[index]}</p>
+                            <div style={{display:'flex', alignItems:'center', gap:'1rem'}}>
+                                <div style={{padding:'.7rem', borderRadius:'0.5rem', backgroundColor:'rgb(44, 50, 54)'}}>{item.svg}</div>
+                                <div>
+                                    <div style={{marginLeft:'.5rem', marginBottom:'.5rem'}}>
+                                        <p>{item.title}</p>
+                                    </div>
+                                    <div className='item-value'>
+                                        <p>{init[index]}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         {isOpen===item.id ? (
@@ -185,11 +189,12 @@ export const SideBar = ()=>{
                                     <div className="input-measurment">
                                     <input type="number" step={1} min={0} max={10} 
                                             onChange={(e) => handleChange(item.title, e.target.value, index)} 
-                                            value={inputValues[item.title][index] || 0} />
+                                            value={inputValues[item.title][index] || 0}
+                                            style={{fontWeight:'600'}} />
                                     <select onChange={(e) => handleUnitChange(item.title, index, e.target.value)}  
-                                            value={localValues[item.title]?.[index] ?? inputValues[item.title]?.[index] ?? "0"}>
+                                            value={unit[item.title][index]}>
                                         {item.mesure.map((mesurement) => (
-                                        <option key={mesurement} value={mesurement}>{mesurement}</option>
+                                        <option key={mesurement} value={mesurement} style={{fontWeight:'600'}}>{mesurement}</option>
                                         ))}
                                     </select>
                                     </div>
@@ -203,14 +208,19 @@ export const SideBar = ()=>{
                 ):(
                   <div>
                         <div className='item' onClick={()=>{if(!item.id){setIsOpen(null)} else{setIsOpen(isOpen===item.id ? null : item.id )}}}>
-                                <div>
-                                    <p>{item.title}</p>
+                                <div style={{display:'flex',alignItems:'center', gap:'1rem'}}>
+                                    <div style={{padding:'.7rem', borderRadius:'0.5rem', backgroundColor:'rgb(44, 50, 54)'}}>{item.svg}</div>
+                                    <div>
+                                        <div style={{marginLeft:'.5rem', marginBottom:'.5rem'}}>
+                                            <p>{item.title}</p>
+                                        </div>
+                                        <select onChange={(e)=>handleSelectionChange(item.title,e.target.value)}>
+                                            {item.selections.map((select)=>
+                                            <option value={select} style={{fontWeight:'600'}}>{select}</option>
+                                            )}
+                                        </select>
+                                    </div>
                                 </div>
-                                <select onChange={(e)=>handleSelectionChange(item.title,e.target.value)}>
-                                    {item.selections.map((select)=>
-                                       <option value={select}>{select}</option>
-                                    )}
-                                </select>
                         </div>
                   </div>
                 )

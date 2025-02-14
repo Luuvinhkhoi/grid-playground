@@ -3,17 +3,16 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux'
 export const Resize = ()=>{
     const select=useSelector((state)=>state.init)
-    const gridStyles = useMemo(() => ({
-       gridTemplateColumns: select.gridTemplateColumns,
-       gridTemplateRows: select.gridTemplateRows,
-       gap: select.gap,
-       justifyItems: select.justifyItem,
-       justifyContent: select.justifyContent,
-       alignContent: select.alignContent,
-       alignItems:select.alignItem
-   }), [select]);
     return (
-     <div className='resize' style={gridStyles}>
+     <div className='resize' style={{
+        gridTemplateColumns: select.gridTemplateColumns,
+        gridTemplateRows: select.gridTemplateRows,
+        gap: select.gap,
+        justifyItems: select.justifyItem,
+        justifyContent: select.justifyContent,
+        alignContent: select.alignContent,
+        alignItems:select.alignItem
+     }}>
             <div>Item 1</div>
             <div>Item 2</div>
             <div>Item 3</div>
